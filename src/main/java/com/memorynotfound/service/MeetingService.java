@@ -2,6 +2,7 @@ package com.memorynotfound.service;
 
 
 import com.memorynotfound.config.DtSource;
+import com.memorynotfound.controller.ProfileCotroller;
 import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.User;
 
@@ -94,8 +95,9 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public Meeting getMettById(int id) {
+    public Meeting getMettById(int uid,int id) {
         Meeting meeting = new Meeting();
+        boolean flag = false;
         try {
             Connection c = dataSource.getConnection();
             PreparedStatement stmt = c.prepareStatement("select * from meeting where id = ?;");
@@ -113,6 +115,9 @@ public class MeetingService implements Mservice {
                     user.setId(users.getInt("id"));
                     user.setUsername(users.getString("username"));
                     user.setRole(users.getString("userrole"));
+                    if (user.getId()==uid){
+                        flag=true;
+                    }
                     meeting.addUser(user);
                 }
             }
@@ -122,7 +127,10 @@ public class MeetingService implements Mservice {
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-        return meeting;
+        if (flag) {
+            return meeting;
+        }
+        else return null;
     }
 
     @Override
@@ -158,7 +166,7 @@ public class MeetingService implements Mservice {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
-        meeting1 = getMettById(meeting.getId());
+        meeting1 = getMettById(ProfileCotroller.uid,meeting.getId());
         return meeting1;
     }
 }

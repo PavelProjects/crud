@@ -9,7 +9,7 @@ import java.util.List;
 public interface Mservice {
     List<Meeting> getAllMeeting();
     List<Meeting> getUserMeetings(int id);
-    Meeting getMettById(int id);
+    Meeting getMettById(int uid,int id);
     void addUser(int id, int uid);
     Meeting update(Meeting meeting);
 }

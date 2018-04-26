@@ -33,7 +33,7 @@ public class MeetingController {
     }
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public ResponseEntity<Meeting> getMeetById(@PathVariable("id") int id){
-        Meeting meeting = mservice.getMettById(id);
+        Meeting meeting = mservice.getMettById(ProfileCotroller.uid,id);
         if (meeting==null){
             return new ResponseEntity<Meeting>(HttpStatus.NO_CONTENT);
         }
