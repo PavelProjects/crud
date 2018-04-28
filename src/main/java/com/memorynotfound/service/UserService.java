@@ -152,6 +152,31 @@ public class UserService implements Uservice{
         }
         return user1;
     }
+    @Override
+    public List<User> findByName(String name) {
+        Connection c = null;
+        List<User> users = new ArrayList<>();
+        try {
+            c = dataSource.getConnection();
+            PreparedStatement stmt = c.prepareStatement("select * from users where username = ?;");
+            stmt.setString(1, name);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                User user =new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("userrole"));
+                users.add(user);
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+        return users;
+    }
 
     public void create(User user1) {
         try {

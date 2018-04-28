@@ -22,7 +22,6 @@ public class UserController {
 
     private Uservice uservice = new UserService();
 
-    // =========================================== Get All Users ==========================================
 
 
     @RequestMapping(method = RequestMethod.GET)
@@ -38,9 +37,8 @@ public class UserController {
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 
-    // =========================================== Get User By ID =========================================
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "fid/{id}", method = RequestMethod.GET)
     public ResponseEntity<User> get(@PathVariable("id") int id){
         LOG.info("getting user with id: {}", id);
         User user = uservice.findById(id);
@@ -52,8 +50,17 @@ public class UserController {
 
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
+    @RequestMapping(value = "fname/{name}",method = RequestMethod.GET)
+    public ResponseEntity<List<User>> getByName(@PathVariable("name")String name){
+        List<User> users = uservice.findByName(name);
+        if (users == null || users.isEmpty()){
+            LOG.info("user with id {} not found");
+            return new ResponseEntity<List<User>>(HttpStatus.NOT_FOUND);
+        }
 
-    // =========================================== Create New User ========================================
+        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+    }
+
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<User> create(@RequestBody User user, UriComponentsBuilder ucBuilder){
@@ -66,7 +73,6 @@ public class UserController {
         return new ResponseEntity<User>(user,headers, HttpStatus.CREATED);
     }
 
-    // =========================================== Update Existing User ===================================
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<User> update(@PathVariable int id, @RequestBody User user){
@@ -86,7 +92,6 @@ public class UserController {
         return new ResponseEntity<User>(currentUser, HttpStatus.OK);
     }
 
-    // =========================================== Delete User ============================================
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable("id") int id){

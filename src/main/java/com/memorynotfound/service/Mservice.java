@@ -11,5 +11,6 @@ public interface Mservice {
     List<Meeting> getUserMeetings(int id);
     Meeting getMettById(int uid,int id);
     void addUser(int id, int uid);
+    void deleteUser(int id, int uid);
     Meeting update(Meeting meeting);
 }

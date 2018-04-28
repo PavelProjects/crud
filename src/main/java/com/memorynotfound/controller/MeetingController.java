@@ -23,6 +23,7 @@ public class MeetingController {
         }
         return new ResponseEntity<List<Meeting>>(meeting,HttpStatus.OK);
     }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Meeting>> getUsersMeetings(){
         List<Meeting> meeting= mservice.getUserMeetings(ProfileCotroller.uid);
@@ -31,6 +32,7 @@ public class MeetingController {
         }
         return new ResponseEntity<List<Meeting>>(meeting,HttpStatus.OK);
     }
+
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public ResponseEntity<Meeting> getMeetById(@PathVariable("id") int id){
         Meeting meeting = mservice.getMettById(ProfileCotroller.uid,id);
@@ -39,11 +41,19 @@ public class MeetingController {
         }
         return new ResponseEntity<Meeting>(meeting,HttpStatus.OK);
     }
+
     @RequestMapping(value = "/{id}/{uid}",method = RequestMethod.POST)
     public ResponseEntity<Void>addUser(@PathVariable("id") int id,@PathVariable("uid")int uid){
         mservice.addUser(id,uid);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = "{id}/{uid}",method = RequestMethod.DELETE)
+    public ResponseEntity<Void>deleteUser(@PathVariable("id") int id,@PathVariable("uid") int uid){
+        mservice.deleteUser(id,uid);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
     public ResponseEntity<Meeting>update(@RequestBody Meeting meeting){
         Meeting meeting1 = mservice.update(meeting);

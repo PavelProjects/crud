@@ -13,6 +13,7 @@ public interface Uservice {
     List<UserEvent> getEvents(int id);
     void addEvent (int id, UserEvent userEvent);
     User findById(int id);
+    List<User> findByName(String name);
     void create (User user1);
     void delete (int id);
     int auth (String username, String pass);

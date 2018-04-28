@@ -135,7 +135,7 @@ public class MeetingService implements Mservice {
 
     @Override
     public void addUser(int id, int uid) {
-        if (uid>0) {
+        if (uid>0 && id>0) {
             try {
                 Connection c = dataSource.getConnection();
                 PreparedStatement pr = c.prepareStatement("insert into meetings(mid,uid) values (?,?);");
@@ -145,6 +145,23 @@ public class MeetingService implements Mservice {
                 pr.close();
                 c.close();
             } catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void deleteUser(int id, int uid) {
+        if (uid>0 && id > 0){
+            try{
+                Connection c = dataSource.getConnection();
+                PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and uid = ?;");
+                pr.setInt(1, id);
+                pr.setInt(2,uid);
+                pr.execute();
+                pr.close();
+                c.close();
+            }catch (Exception e){
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
