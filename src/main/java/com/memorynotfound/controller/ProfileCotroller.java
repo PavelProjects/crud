@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/profile")
 public class ProfileCotroller {
-    public static int uid;
+    public static String uid;
 
     private Uservice uservice = new UserService();
 
@@ -29,13 +29,19 @@ public class ProfileCotroller {
         return new ResponseEntity<List<User>>(friends,HttpStatus.OK);
     }
     @RequestMapping(value = "/friends/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteFriend(@PathVariable("id")int id){
+    public ResponseEntity<Void> deleteFriend(@PathVariable("id")String id){
         uservice.deleteFriend(uid,id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
     @RequestMapping(value = "/friends/{id}", method = RequestMethod.POST)
-    public ResponseEntity<Void> addFriend(@PathVariable("id")int id){
+    public ResponseEntity<Void> addFriend(@PathVariable("id")String id){
         uservice.addFriend(uid,id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+    @RequestMapping(value = "/auth", method = RequestMethod.GET)
+    public ResponseEntity<User> authUser(){
+        User user = uservice.findById(uid);
+        return new ResponseEntity<User>(user,HttpStatus.OK);
+    }
+
 }

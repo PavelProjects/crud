@@ -7,12 +7,12 @@ import java.util.List;
 public class Meeting implements Serializable{
     private int id;
     private String meetname;
-    private int admin;
+    private String admin;
     private List<User> users = new ArrayList();
 
     public Meeting(){}
 
-    public Meeting(int id, String name, int admin,List<User> users ){
+    public Meeting(int id, String name, String admin,List<User> users ){
         this.id=id;
         this.meetname=name;
         this.admin=admin;
@@ -30,10 +30,10 @@ public class Meeting implements Serializable{
     public void setName(String name){
         this.meetname=name;
     }
-    public int getAdmin(){
+    public String getAdmin(){
         return admin;
     }
-    public void setAdmin(int admin){
+    public void setAdmin(String admin){
         this.admin=admin;
     }
 

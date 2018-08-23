@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface Mservice {
     List<Meeting> getAllMeeting();
-    List<Meeting> getUserMeetings(int id);
-    Meeting getMettById(int uid,int id);
-    void addUser(int id, int uid);
-    void deleteUser(int id, int uid);
+    List<Meeting> getUserMeetings(String id);
+    Meeting getMettById(String uid,int id);
+    void addUser(int id, String uid);
+    void deleteUser(int id, String uid);
     Meeting update(Meeting meeting);
 }

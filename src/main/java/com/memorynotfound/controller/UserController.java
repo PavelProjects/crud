@@ -5,7 +5,6 @@ import com.memorynotfound.service.UserService;
 import com.memorynotfound.service.Uservice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping(" /users")
 public class UserController {
 
     private final Logger LOG = LoggerFactory.getLogger(UserController.class);
@@ -25,9 +24,7 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAll(@RequestParam(value = "offset", defaultValue = "0") int offset,
-                                             @RequestParam(value = "count", defaultValue = "10") int count) {
-        LOG.info("getting all users with offset: {}, and count: {}", offset, count);
+    public ResponseEntity<List<User>> getAll() {
         List<User> users = uservice.getAll();
         if (users == null || users.isEmpty()){
             LOG.info("no users found");
@@ -39,7 +36,7 @@ public class UserController {
 
 
     @RequestMapping(value = "fid/{id}", method = RequestMethod.GET)
-    public ResponseEntity<User> get(@PathVariable("id") int id){
+    public ResponseEntity<User> get(@PathVariable("id") String id){
         LOG.info("getting user with id: {}", id);
         User user = uservice.findById(id);
 
@@ -75,7 +72,7 @@ public class UserController {
 
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<User> update(@PathVariable int id, @RequestBody User user){
+    public ResponseEntity<User> update(@PathVariable String id, @RequestBody User user){
         LOG.info("updating user: {}", user);
         User currentUser = uservice.findById(id);
 
@@ -85,7 +82,7 @@ public class UserController {
         }
 
         currentUser.setId(user.getId());
-        currentUser.setUsername(user.getUsername());
+        currentUser.setName(user.getName());
         currentUser.setRole(user.getRole());
 
         //userService.update(user);
@@ -94,7 +91,7 @@ public class UserController {
 
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> delete(@PathVariable("id") int id){
+    public ResponseEntity<Void> delete(@PathVariable("id") String id){
         LOG.info("deleting user with id: {}", id);
         User user = uservice.findById(ProfileCotroller.uid);
         if (user.getRole().contains("admin")) {

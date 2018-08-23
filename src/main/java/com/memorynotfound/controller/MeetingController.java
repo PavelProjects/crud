@@ -43,13 +43,13 @@ public class MeetingController {
     }
 
     @RequestMapping(value = "/{id}/{uid}",method = RequestMethod.POST)
-    public ResponseEntity<Void>addUser(@PathVariable("id") int id,@PathVariable("uid")int uid){
+    public ResponseEntity<Void>addUser(@PathVariable("id") int id,@PathVariable("uid")String uid){
         mservice.addUser(id,uid);
         return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "{id}/{uid}",method = RequestMethod.DELETE)
-    public ResponseEntity<Void>deleteUser(@PathVariable("id") int id,@PathVariable("uid") int uid){
+    public ResponseEntity<Void>deleteUser(@PathVariable("id") int id,@PathVariable("uid") String uid){
         mservice.deleteUser(id,uid);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

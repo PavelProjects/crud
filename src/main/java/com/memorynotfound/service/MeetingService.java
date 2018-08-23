@@ -35,13 +35,13 @@ public class MeetingService implements Mservice {
                 Meeting meeting = new Meeting();
                 meeting.setId(id);
                 meeting.setName(rs.getString("name"));
-                meeting.setAdmin(rs.getInt("admin"));
+                meeting.setAdmin(rs.getString("admin"));
                 pr.setInt(1, id);
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
-                    user.setId(users.getInt("id"));
-                    user.setUsername(users.getString("username"));
+                    user.setId(users.getString("id"));
+                    user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
                     meeting.addUser(user);
                 }
@@ -58,7 +58,7 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public List<Meeting> getUserMeetings(int uid) {
+    public List<Meeting> getUserMeetings(String uid) {
         List<Meeting> meet = new ArrayList<>();
         Connection c = null;
         int id = 0;
@@ -66,20 +66,20 @@ public class MeetingService implements Mservice {
             c = dataSource.getConnection();
             PreparedStatement mr = c.prepareStatement("select * from meeting where id in (select meetings.mid from meetings where meetings.uid = ?);");
             PreparedStatement pr = c.prepareStatement("select users.* from meetings inner join users on meetings.uid = users.id where mid = ?;");
-            mr.setInt(1,uid);
+            mr.setString(1,uid);
             ResultSet rs = mr.executeQuery();
             while (rs.next()) {
                 id = rs.getInt("id");
                 Meeting meeting = new Meeting();
                 meeting.setId(id);
                 meeting.setName(rs.getString("name"));
-                meeting.setAdmin(rs.getInt("admin"));
+                meeting.setAdmin(rs.getString("admin"));
                 pr.setInt(1, id);
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
-                    user.setId(users.getInt("id"));
-                    user.setUsername(users.getString("username"));
+                    user.setId(users.getString("id"));
+                    user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
                     meeting.addUser(user);
                 }
@@ -95,7 +95,7 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public Meeting getMettById(int uid,int id) {
+    public Meeting getMettById(String uid,int id) {
         Meeting meeting = new Meeting();
         boolean flag = false;
         try {
@@ -108,12 +108,12 @@ public class MeetingService implements Mservice {
             while (rs.next()) {
                 meeting.setId(rs.getInt("id"));
                 meeting.setName(rs.getString("name"));
-                meeting.setAdmin(rs.getInt("admin"));
+                meeting.setAdmin(rs.getString("admin"));
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
-                    user.setId(users.getInt("id"));
-                    user.setUsername(users.getString("username"));
+                    user.setId(users.getString("id"));
+                    user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
                     if (user.getId()==uid){
                         flag=true;
@@ -134,13 +134,13 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public void addUser(int id, int uid) {
-        if (uid>0 && id>0) {
+    public void addUser(int id, String uid) {
+        if (uid.length()>0 && id>0) {
             try {
                 Connection c = dataSource.getConnection();
                 PreparedStatement pr = c.prepareStatement("insert into meetings(mid,uid) values (?,?);");
                 pr.setInt(1, id);
-                pr.setInt(2,uid);
+                pr.setString(2,uid);
                 pr.execute();
                 pr.close();
                 c.close();
@@ -151,13 +151,13 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public void deleteUser(int id, int uid) {
-        if (uid>0 && id > 0){
+    public void deleteUser(int id, String uid) {
+        if (uid.length()>0 && id > 0){
             try{
                 Connection c = dataSource.getConnection();
                 PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and uid = ?;");
                 pr.setInt(1, id);
-                pr.setInt(2,uid);
+                pr.setString(2,uid);
                 pr.execute();
                 pr.close();
                 c.close();

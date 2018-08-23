@@ -6,7 +6,7 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 public class DtSource {
     public static DataSource getDts (){
         PoolProperties p = new PoolProperties();
-        p.setUrl("jdbc:postgresql://localhost/paveldata");
+        p.setUrl("jdbc:postgresql://localhost/meeting");
         p.setDriverClassName("org.postgresql.Driver");
         p.setUsername("pavel");
         p.setPassword("75237523");

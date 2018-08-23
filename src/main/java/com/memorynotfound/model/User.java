@@ -4,36 +4,38 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private int id;
-    private String username;
+    private String id;
+    private String name;
     private String role;
     private String password;
+    private String mail;
 
 
     public User() {
     }
 
-    public User(int id, String username, String role, String password) {
+    public User(String id, String name, String role, String password, String mail) {
         this.id = id;
-        this.username = username;
+        this.name = name;
         this.role=role;
         this.password=password;
+        this.mail = mail;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRole() {
@@ -52,4 +54,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 }

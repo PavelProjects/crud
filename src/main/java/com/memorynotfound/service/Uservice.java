@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface Uservice {
     List<User> getAll();
-    List<User> getFriends(int id);
-    void addFriend(int id, int fid);
-    void deleteFriend(int id, int fid);
-    List<UserEvent> getEvents(int id);
-    void addEvent (int id, UserEvent userEvent);
-    User findById(int id);
+    List<User> getFriends(String id);
+    void addFriend(String id, String fid);
+    void deleteFriend(String id, String fid);
+    List<UserEvent> getEvents(String id);
+    void addEvent (String id, UserEvent userEvent);
+    User findById(String id);
     List<User> findByName(String name);
-    void create (User user1);
-    void delete (int id);
-    int auth (String username, String pass);
+    boolean create (User user1);
+    void delete (String id);
+    String auth (String username, String pass);
 }

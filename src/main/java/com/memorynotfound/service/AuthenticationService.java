@@ -26,8 +26,8 @@ public class AuthenticationService {
                 usernameAndPassword, ":");
         final String username = tokenizer.nextToken();
         final String password = tokenizer.nextToken();
-        int id = us.auth(username,password);
-        if (id>0){
+        String id = us.auth(username,password);
+        if (id.length()>0){
             flag=true;
             ProfileCotroller.uid=id;
         }

@@ -15,8 +15,8 @@ public class RestAuthenticationFilter implements javax.servlet.Filter {
                          FilterChain filter) throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-            String authCredentials = httpServletRequest
-                    .getHeader(AUTHENTICATION_HEADER);
+                String authCredentials = httpServletRequest
+                        .getHeader(AUTHENTICATION_HEADER);
 
             // better injected
             AuthenticationService authenticationService = new AuthenticationService();

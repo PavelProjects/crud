@@ -8,7 +8,6 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.Filter;
 
 public class ServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
     @Override
     protected Class<?>[] getServletConfigClasses() {
         return new Class[] { WebConfig.class };
@@ -23,6 +22,7 @@ public class ServletInitializer extends AbstractAnnotationConfigDispatcherServle
     protected Class<?>[] getRootConfigClasses() {
         return null;
     }
+
     RestAuthenticationFilter auth=new RestAuthenticationFilter();
     @Override
     @RequestMapping("/")
