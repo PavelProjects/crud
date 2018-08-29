@@ -1,6 +1,7 @@
 package com.memorynotfound.service;
 
 import com.memorynotfound.config.DtSource;
+import com.memorynotfound.model.Message;
 import com.memorynotfound.model.User;
 import com.memorynotfound.model.UserEvent;
 
@@ -19,7 +20,7 @@ public class UserService implements Uservice{
         Statement stmt = null;
         Connection c = null;
         try {
-            c= DtSource.getDts().getConnection();
+            c= dataSource.getConnection();
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("select * from users;");
             while (rs.next()) {
@@ -85,7 +86,7 @@ public class UserService implements Uservice{
         List<User> friends = new ArrayList<>();
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr = c.prepareStatement("select users.* from friends inner join users on friends.fid = users.id where uid = ?;");
+            PreparedStatement pr = c.prepareStatement("select users.* from friends inner join users on friends.fmail = users.mail where umail = ?;");
             pr.setString(1, id);
             ResultSet rs = pr.executeQuery();
             while (rs.next()){
@@ -108,12 +109,28 @@ public class UserService implements Uservice{
     public void addFriend(String id, String fid) {
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr = c.prepareStatement("insert into friends values(?,?)");
+            PreparedStatement pr = c.prepareStatement("insert into friends values(?,?);");
             pr.setString(1,id);
             pr.setString(2,fid);
             pr.execute();
         }catch (Exception e){
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+        Message message = new Message();
+        Message.Data data = new Message.Data();
+        data.setF("server");
+        data.setEvent("add_friend");
+        User user = findByMail(id);
+        User user1 = findByMail(fid);
+        data.setUser(user);
+        data.setMessage(user.getName()+" added you as a friend! Tap for more info.");
+        message.setData(data);
+        message.setTo(user1.getId());
+        FirebaseService fb = new FirebaseService();
+        try {
+            fb.sendMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -121,7 +138,7 @@ public class UserService implements Uservice{
     public void deleteFriend(String id, String fid) {
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr = c.prepareStatement(" delete from friends where uid = ? and fid = ?;");
+            PreparedStatement pr = c.prepareStatement(" delete from friends where umail = ? and fmail = ?;");
             pr.setString(1, id);
             pr.setString(2,fid);
             pr.execute();
@@ -137,6 +154,30 @@ public class UserService implements Uservice{
             c = dataSource.getConnection();
             PreparedStatement stmt = c.prepareStatement("select * from users where id = ?;");
             stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                user1.setId(rs.getString("id"));
+                user1.setName(rs.getString("name"));
+                user1.setPassword(rs.getString("password"));
+                user1.setRole(rs.getString("userrole"));
+                user1.setMail(rs.getString("mail"));
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+        return user1;
+    }
+
+    public User findByMail(String mail) {
+        Connection c = null;
+        User user1 = new User();
+        try {
+            c = dataSource.getConnection();
+            PreparedStatement stmt = c.prepareStatement("select * from users where mail = ?;");
+            stmt.setString(1, mail);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 user1.setId(rs.getString("id"));
@@ -229,7 +270,7 @@ public class UserService implements Uservice{
             stmt.setString(2,pass);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                i = rs.getString("id");
+                i = rs.getString("mail");
             }
             rs.close();
             stmt.close();

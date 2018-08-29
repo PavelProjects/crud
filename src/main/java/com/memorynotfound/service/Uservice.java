@@ -13,6 +13,7 @@ public interface Uservice {
     List<UserEvent> getEvents(String id);
     void addEvent (String id, UserEvent userEvent);
     User findById(String id);
+    User findByMail (String mail);
     List<User> findByName(String name);
     boolean create (User user1);
     void delete (String id);

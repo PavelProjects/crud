@@ -20,6 +20,32 @@ public class MeetingService implements Mservice {
     DataSource dataSource = DtSource.getDts();
 
     @Override
+    public Meeting createMeeting(Meeting meeting) {
+        Meeting returnMeeting=new Meeting();
+        try{
+            Connection c = dataSource.getConnection();
+            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail) values (?,?);");
+            pr.setString(1,meeting.getName());
+            pr.setString(2,meeting.getAdmin());
+            ResultSet rs = pr.executeQuery();
+            while (rs.next()){
+                returnMeeting.setId(rs.getInt("id"));
+                returnMeeting.setName(rs.getString("name"));
+                returnMeeting.setAdmin(rs.getString("admin_mail"));
+            }
+            pr = c.prepareStatement("insert into meetings values (?,?);");
+            pr.setInt(1,returnMeeting.getId());
+            pr.setString(2,meeting.getAdmin());
+            pr.execute();
+            pr.cancel();
+            c.close();
+        }catch (Exception e){
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+        return returnMeeting;
+    }
+
+    @Override
     public List<Meeting> getAllMeeting() {
         List<Meeting> meet = new ArrayList<>();
         Connection c = null;
@@ -35,7 +61,7 @@ public class MeetingService implements Mservice {
                 Meeting meeting = new Meeting();
                 meeting.setId(id);
                 meeting.setName(rs.getString("name"));
-                meeting.setAdmin(rs.getString("admin"));
+                meeting.setAdmin(rs.getString("admin_mail"));
                 pr.setInt(1, id);
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
@@ -43,6 +69,7 @@ public class MeetingService implements Mservice {
                     user.setId(users.getString("id"));
                     user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
+                    user.setMail(users.getString("mail"));
                     meeting.addUser(user);
                 }
                 meet.add(meeting);
@@ -64,8 +91,8 @@ public class MeetingService implements Mservice {
         int id = 0;
         try {
             c = dataSource.getConnection();
-            PreparedStatement mr = c.prepareStatement("select * from meeting where id in (select meetings.mid from meetings where meetings.uid = ?);");
-            PreparedStatement pr = c.prepareStatement("select users.* from meetings inner join users on meetings.uid = users.id where mid = ?;");
+            PreparedStatement mr = c.prepareStatement("select * from meeting where id in (select meetings.mid from meetings where meetings.umail = ?);");
+            PreparedStatement pr = c.prepareStatement("select users.* from meetings inner join users on meetings.umail = users.mail where mid = ?;");
             mr.setString(1,uid);
             ResultSet rs = mr.executeQuery();
             while (rs.next()) {
@@ -73,7 +100,7 @@ public class MeetingService implements Mservice {
                 Meeting meeting = new Meeting();
                 meeting.setId(id);
                 meeting.setName(rs.getString("name"));
-                meeting.setAdmin(rs.getString("admin"));
+                meeting.setAdmin(rs.getString("admin_mail"));
                 pr.setInt(1, id);
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
@@ -81,6 +108,7 @@ public class MeetingService implements Mservice {
                     user.setId(users.getString("id"));
                     user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
+                    user.setMail(users.getString("mail"));
                     meeting.addUser(user);
                 }
                 meet.add(meeting);
@@ -101,14 +129,14 @@ public class MeetingService implements Mservice {
         try {
             Connection c = dataSource.getConnection();
             PreparedStatement stmt = c.prepareStatement("select * from meeting where id = ?;");
-            PreparedStatement pr = c.prepareStatement("select users.* from meetings inner join users on meetings.uid = users.id where mid = ?;");
+            PreparedStatement pr = c.prepareStatement("select users.* from meetings inner join users on meetings.umail = users.mail where mid = ?;");
             stmt.setInt(1, id);
             pr.setInt(1,id);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 meeting.setId(rs.getInt("id"));
                 meeting.setName(rs.getString("name"));
-                meeting.setAdmin(rs.getString("admin"));
+                meeting.setAdmin(rs.getString("admin_mail"));
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
@@ -138,7 +166,7 @@ public class MeetingService implements Mservice {
         if (uid.length()>0 && id>0) {
             try {
                 Connection c = dataSource.getConnection();
-                PreparedStatement pr = c.prepareStatement("insert into meetings(mid,uid) values (?,?);");
+                PreparedStatement pr = c.prepareStatement("insert into meetings(mid,umail) values (?,?);");
                 pr.setInt(1, id);
                 pr.setString(2,uid);
                 pr.execute();
@@ -155,7 +183,7 @@ public class MeetingService implements Mservice {
         if (uid.length()>0 && id > 0){
             try{
                 Connection c = dataSource.getConnection();
-                PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and uid = ?;");
+                PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and umail = ?;");
                 pr.setInt(1, id);
                 pr.setString(2,uid);
                 pr.execute();

@@ -1,6 +1,7 @@
 package com.memorynotfound.controller;
 
 
+import com.memorynotfound.model.Message;
 import com.memorynotfound.service.FbService;
 import com.memorynotfound.service.FirebaseService;
 import org.springframework.http.HttpStatus;
@@ -13,11 +14,16 @@ public class FirebaseController {
     private FbService fbService =new FirebaseService();
 
     @RequestMapping(value = "/send",method = RequestMethod.POST)
-    public ResponseEntity<Void> sendMessage(@RequestBody String message) throws Exception {
+    public ResponseEntity<Void> sendMessage(@RequestBody Message message) throws Exception {
         if (message== null){
             return new ResponseEntity<Void>(HttpStatus.CONFLICT);
         }
-        fbService.sendMessage(message.toString());
+        fbService.sendMessage(message);
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+    @RequestMapping(value = "/token",method = RequestMethod.POST)
+    public ResponseEntity<Void> updateToken(@RequestBody String token){
+        fbService.TokenChanged(token,ProfileCotroller.uid);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

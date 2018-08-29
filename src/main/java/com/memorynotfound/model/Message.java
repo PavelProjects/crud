@@ -22,6 +22,24 @@ public class Message {
     public static class Data{
         private String message;
         private String f;
+        private String event;
+        private User user;
+
+        public String getEvent() {
+            return event;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setEvent(String event) {
+            this.event = event;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
 
         public String getMessage() {
             return message;
@@ -31,12 +49,13 @@ public class Message {
             this.message = message;
         }
 
-        public String getFrom() {
+        public String getF() {
             return f;
         }
 
-        public void setFrom(String from) {
-            this.f = from;
+        public void setF(String f) {
+            this.f = f;
         }
+
     }
 }

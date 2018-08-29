@@ -15,6 +15,16 @@ import java.util.List;
 public class MeetingController {
 
     private Mservice mservice =  new MeetingService();
+
+    @RequestMapping
+    public ResponseEntity<Meeting> createMeeting(@RequestBody Meeting meeting){
+        Meeting rmeeting = mservice.createMeeting(meeting);
+        if (rmeeting==null){
+            return new ResponseEntity<Meeting>(HttpStatus.CONFLICT);
+        }
+        return  new ResponseEntity<Meeting>(rmeeting,HttpStatus.CREATED);
+    }
+
     @RequestMapping(value = "/all",method = RequestMethod.GET)
     public ResponseEntity<List<Meeting>> getAll(){
         List<Meeting> meeting= mservice.getAllMeeting();

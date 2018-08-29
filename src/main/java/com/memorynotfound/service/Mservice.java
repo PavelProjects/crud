@@ -7,6 +7,7 @@ import com.memorynotfound.model.User;
 import java.util.List;
 
 public interface Mservice {
+    Meeting createMeeting(Meeting meeting);
     List<Meeting> getAllMeeting();
     List<Meeting> getUserMeetings(String id);
     Meeting getMettById(String uid,int id);
