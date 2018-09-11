@@ -24,6 +24,15 @@ public class Message {
         private String f;
         private String event;
         private User user;
+        private String info;
+
+        public String getInfo() {
+            return info;
+        }
+
+        public void setInfo(String inf) {
+            this.info = inf;
+        }
 
         public String getEvent() {
             return event;

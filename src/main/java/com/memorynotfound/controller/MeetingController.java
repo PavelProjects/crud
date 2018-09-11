@@ -16,13 +16,14 @@ public class MeetingController {
 
     private Mservice mservice =  new MeetingService();
 
-    @RequestMapping
-    public ResponseEntity<Meeting> createMeeting(@RequestBody Meeting meeting){
-        Meeting rmeeting = mservice.createMeeting(meeting);
-        if (rmeeting==null){
-            return new ResponseEntity<Meeting>(HttpStatus.CONFLICT);
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Integer> createMeeting(@RequestBody Meeting meeting){
+        meeting.setAdmin(ProfileCotroller.uid);
+        int id = mservice.createMeeting(meeting);
+        if (id == 0){
+            return new ResponseEntity<Integer>(HttpStatus.CONFLICT);
         }
-        return  new ResponseEntity<Meeting>(rmeeting,HttpStatus.CREATED);
+        return  new ResponseEntity<Integer>(id,HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/all",method = RequestMethod.GET)
@@ -65,11 +66,9 @@ public class MeetingController {
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
-    public ResponseEntity<Meeting>update(@RequestBody Meeting meeting){
-        Meeting meeting1 = mservice.update(meeting);
-        if (meeting1==null){
-            return new ResponseEntity<Meeting>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<Meeting>(meeting,HttpStatus.OK);
+    public ResponseEntity<Meeting>update(@RequestBody Meeting meeting,@PathVariable("id") int id){
+        meeting.setId(id);
+        mservice.update(meeting);
+        return new ResponseEntity<Meeting>(meeting,HttpStatus.OK    );
     }
 }

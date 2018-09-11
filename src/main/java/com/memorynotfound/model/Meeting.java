@@ -1,7 +1,9 @@
 package com.memorynotfound.model;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Meeting implements Serializable{
@@ -9,14 +11,20 @@ public class Meeting implements Serializable{
     private String meetname;
     private String admin;
     private List<User> users = new ArrayList();
+    private Date date;
+    private String time;
+    private String adress;
 
     public Meeting(){}
 
-    public Meeting(int id, String name, String admin,List<User> users ){
+    public Meeting(int id, String name, String admin,List<User> users, Date date, String time, String adress){
         this.id=id;
         this.meetname=name;
         this.admin=admin;
         this.users=users;
+        this.date = date;
+        this.time = time;
+        this.adress = adress;
     }
     public int getId(){
         return id;
@@ -43,5 +51,29 @@ public class Meeting implements Serializable{
 
     public void addUser(User user) {
         this.users.add(user);
+    }
+
+    public String getAdress() {
+        return adress;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
