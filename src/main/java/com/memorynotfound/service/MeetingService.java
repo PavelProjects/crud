@@ -19,11 +19,10 @@ public class MeetingService implements Mservice {
     FirebaseService fb=new FirebaseService();
 
     @Override
-    public int createMeeting(Meeting meeting) {
-        int id = 0;
+    public Meeting createMeeting(Meeting meeting) {
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail, date, time, adress) values (?,?,?,?,?) returning id;");
+            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail, date, time, adress) values (?,?,?,?,?) returning *;");
             pr.setString(1,meeting.getName());
             pr.setString(2,meeting.getAdmin());
             pr.setDate(3, Date.valueOf(java.time.LocalDate.now()));
@@ -31,11 +30,17 @@ public class MeetingService implements Mservice {
             pr.setString(5,meeting.getAdress());
             ResultSet rs = pr.executeQuery();
             while (rs.next()){
-                id = rs.getInt("id");
+                meeting =new Meeting();
+                meeting.setId(rs.getInt("id"));
+                meeting.setName(rs.getString("name"));
+                meeting.setAdmin(rs.getString("admin_mail"));
+                meeting.setAdress(rs.getString("adress"));
+                meeting.setDate(rs.getDate("date"));
+                meeting.setTime(rs.getString("time"));
             }
-            if (id!=0) {
+            if (meeting.getId()!=0) {
                 pr = c.prepareStatement("insert into meetings values (?,?);");
-                pr.setInt(1, id);
+                pr.setInt(1, meeting.getId());
                 pr.setString(2, meeting.getAdmin());
                 pr.execute();
             }
@@ -44,7 +49,7 @@ public class MeetingService implements Mservice {
         }catch (Exception e){
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-        return id;
+        return meeting;
     }
 
     @Override
@@ -175,33 +180,32 @@ public class MeetingService implements Mservice {
 
     @Override
     public void addUser(int id, String umail) {
-        if (umail.length()>0 && id>0) {
             try {
                 Connection c = dataSource.getConnection();
-                PreparedStatement pr = c.prepareStatement("insert into meetings(mid,umail) values (?,?);");
+                PreparedStatement pr = c.prepareStatement("insert into meetings (mid,umail) values (?,?);");
                 pr.setInt(1, id);
-                pr.setString(2,umail);
+                pr.setString(2, umail);
                 pr.execute();
                 pr.close();
                 c.close();
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
-        }
-        Message message = new Message();
-        Message.Data data = new Message.Data();
-        data.setEvent("add_to_meeting");
-        data.setF("server");
-        data.setInfo(String.valueOf(id));
-        data.setMessage("You have been added to meeting! Tap to open.");
-        message.setData(data);
-        UserService userService = new UserService();
-        message.setTo(userService.findByMail(umail).getId());
-        try {
-            fb.sendMessage(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        Message message = new Message();
+//        Message.Data data = new Message.Data();
+//        data.setEvent("add_to_meeting");
+//        data.setF("server");
+//        data.setInfo(String.valueOf(id));
+//        data.setMessage("You have been added to meeting! Tap to open.");
+//        message.setData(data);
+//        UserService userService = new UserService();
+//        message.setTo(userService.findByMail(umail).getId());
+//        try {
+//            fb.sendMessage(message);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        //return flag;
     }
 
     @Override

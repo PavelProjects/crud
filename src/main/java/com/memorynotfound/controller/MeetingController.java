@@ -17,13 +17,13 @@ public class MeetingController {
     private Mservice mservice =  new MeetingService();
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Integer> createMeeting(@RequestBody Meeting meeting){
-        meeting.setAdmin(ProfileCotroller.uid);
-        int id = mservice.createMeeting(meeting);
-        if (id == 0){
-            return new ResponseEntity<Integer>(HttpStatus.CONFLICT);
+    public ResponseEntity<Meeting> createMeeting(@RequestBody Meeting meeting1){
+        meeting1.setAdmin(ProfileCotroller.uid);
+        Meeting meeting = mservice.createMeeting(meeting1);
+        if (meeting.getId() == 0){
+            return new ResponseEntity<Meeting>(HttpStatus.CONFLICT);
         }
-        return  new ResponseEntity<Integer>(id,HttpStatus.CREATED);
+        return  new ResponseEntity<Meeting>(meeting,HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/all",method = RequestMethod.GET)
@@ -53,10 +53,10 @@ public class MeetingController {
         return new ResponseEntity<Meeting>(meeting,HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/{uid}",method = RequestMethod.POST)
-    public ResponseEntity<Void>addUser(@PathVariable("id") int id,@PathVariable("uid")String uid){
-        mservice.addUser(id,uid);
-        return new ResponseEntity<Void>(HttpStatus.CREATED);
+    @RequestMapping(value = "/{id}/add",method = RequestMethod.POST)
+    public ResponseEntity<Void>addUser(@PathVariable("id") int id,@RequestBody User user){
+        mservice.addUser(id,user.getMail());
+            return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "{id}/{uid}",method = RequestMethod.DELETE)
