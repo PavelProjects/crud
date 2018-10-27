@@ -11,13 +11,13 @@ public class Meeting implements Serializable{
     private String meetname;
     private String admin;
     private List<User> users = new ArrayList();
-    private Date date;
+    private String date;
     private String time;
     private String adress;
 
     public Meeting(){}
 
-    public Meeting(int id, String name, String admin,List<User> users, Date date, String time, String adress){
+    public Meeting(int id, String name, String admin,List<User> users, String date, String time, String adress){
         this.id=id;
         this.meetname=name;
         this.admin=admin;
@@ -57,7 +57,7 @@ public class Meeting implements Serializable{
         return adress;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -69,7 +69,7 @@ public class Meeting implements Serializable{
         this.adress = adress;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

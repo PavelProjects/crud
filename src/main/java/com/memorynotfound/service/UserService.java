@@ -172,19 +172,18 @@ public class UserService implements Uservice{
     }
 
     public User findByMail(String mail) {
-        Connection c = null;
-        User user1 = new User();
+        User user = new User();
         try {
-            c = dataSource.getConnection();
+            Connection c = dataSource.getConnection();
             PreparedStatement stmt = c.prepareStatement("select * from users where mail = ?;");
             stmt.setString(1, mail);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                user1.setId(rs.getString("id"));
-                user1.setName(rs.getString("name"));
-                user1.setPassword(rs.getString("password"));
-                user1.setRole(rs.getString("userrole"));
-                user1.setMail(rs.getString("mail"));
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("userrole"));
+                user.setMail(rs.getString("mail"));
             }
             rs.close();
             stmt.close();
@@ -192,7 +191,7 @@ public class UserService implements Uservice{
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-        return user1;
+        return user;
     }
     @Override
     public List<User> findByName(String name) {

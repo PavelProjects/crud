@@ -30,7 +30,6 @@ public class UserController {
             LOG.info("no users found");
             return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 

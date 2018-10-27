@@ -1,6 +1,8 @@
 package com.memorynotfound.model;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
     private Data data;
     private String to;
 
@@ -24,6 +26,7 @@ public class Message {
         private String f;
         private String event;
         private User user;
+        private Meeting meeting;
         private String info;
 
         public String getInfo() {
@@ -50,6 +53,14 @@ public class Message {
             this.user = user;
         }
 
+        public Meeting getMeeting() {
+            return meeting;
+        }
+
+        public void setMeeting(Meeting meeting) {
+            this.meeting = meeting;
+        }
+
         public String getMessage() {
             return message;
         }
@@ -65,6 +76,5 @@ public class Message {
         public void setF(String f) {
             this.f = f;
         }
-
     }
 }

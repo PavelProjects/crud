@@ -36,6 +36,7 @@ public class ProfileCotroller {
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
     public ResponseEntity<User> authUser(){
         User user = uservice.findByMail(uid);
+        user.setMail(uid);
         return new ResponseEntity<User>(user,HttpStatus.OK);
     }
 

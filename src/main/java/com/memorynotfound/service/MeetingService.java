@@ -35,7 +35,7 @@ public class MeetingService implements Mservice {
                 meeting.setName(rs.getString("name"));
                 meeting.setAdmin(rs.getString("admin_mail"));
                 meeting.setAdress(rs.getString("adress"));
-                meeting.setDate(rs.getDate("date"));
+                meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
             }
             if (meeting.getId()!=0) {
@@ -69,7 +69,7 @@ public class MeetingService implements Mservice {
                 meeting.setId(id);
                 meeting.setName(rs.getString("name"));
                 meeting.setAdmin(rs.getString("admin_mail"));
-                meeting.setDate(rs.getDate("date"));
+                meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setAdress(rs.getString("adress"));
                 pr.setInt(1, id);
@@ -111,7 +111,7 @@ public class MeetingService implements Mservice {
                 meeting.setId(id);
                 meeting.setName(rs.getString("name"));
                 meeting.setAdmin(rs.getString("admin_mail"));
-                meeting.setDate(rs.getDate("date"));
+                meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setAdress(rs.getString("adress"));
                 pr.setInt(1, id);
@@ -150,7 +150,7 @@ public class MeetingService implements Mservice {
                 meeting.setId(rs.getInt("id"));
                 meeting.setName(rs.getString("name"));
                 meeting.setAdmin(rs.getString("admin_mail"));
-                meeting.setDate(rs.getDate("date"));
+                meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setAdress(rs.getString("adress"));
                 ResultSet users = pr.executeQuery();
