@@ -63,4 +63,30 @@ public class MessageService implements MesService {
 
         }
     }
+
+    @Override
+    public List<Message> getMessages(String uid,int mid) {
+        List<Message> messages = new ArrayList<>();
+        if (mservice.getMettById(uid,mid)!=null) {
+            Message message = new Message();
+            Message.Data data = new Message.Data();
+            try {
+                Connection c = dataSource.getConnection();
+                PreparedStatement prmes = c.prepareStatement("select message.* from messages inner join message on messages.mesid = message.id where messages.mid = ?;");
+                prmes.setInt(1, mid);
+                ResultSet rs = prmes.executeQuery();
+                while (rs.next()) {
+                    data.setF(rs.getString("f"));
+                    data.setMessage(rs.getString("message"));
+                    data.setId(rs.getInt("id"));
+                    message.setTo(rs.getString("send_to"));
+                    message.setData(data);
+                    messages.add(message);
+                }
+            } catch (Exception e) {
+                LOG.error(String.valueOf(e));
+            }
+        }
+        return messages;
+    }
 }

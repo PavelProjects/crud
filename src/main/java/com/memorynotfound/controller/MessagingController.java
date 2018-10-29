@@ -8,11 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @RestController
@@ -36,6 +34,16 @@ public class MessagingController {
         }
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+    @RequestMapping(value = "/{mid}", method = RequestMethod.GET)
+    public ResponseEntity<List<Message>> getMessage (@PathVariable("mid") int mid){
+        List<Message> messages = mesService.getMessages(ProfileCotroller.uid,mid);
+        if (messages == null || messages.isEmpty()){
+            LOG.info("no messages");
+            return new ResponseEntity<List<Message>>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<List<Message>>(messages, HttpStatus.FOUND);
+    }
+
     @RequestMapping(value = "/token",method = RequestMethod.POST)
     public ResponseEntity<Void> updateToken(@RequestBody String token){
         fb.TokenChanged(token,ProfileCotroller.uid);

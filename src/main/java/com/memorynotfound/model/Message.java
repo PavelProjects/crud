@@ -22,12 +22,21 @@ public class Message implements Serializable {
     }
 
     public static class Data{
+        private int id;
         private String message;
         private String f;
         private String event;
         private User user;
         private Meeting meeting;
         private String info;
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
 
         public String getInfo() {
             return info;
