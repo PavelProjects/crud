@@ -28,7 +28,7 @@ public class MeetingController {
 
     @RequestMapping(value = "/all",method = RequestMethod.GET)
     public ResponseEntity<List<Meeting>> getAll(){
-        List<Meeting> meeting= mservice.getAllMeeting();
+        List<Meeting> meeting= mservice.getAllMeetings();
         if (meeting == null || meeting.isEmpty()){
             return new ResponseEntity<List<Meeting>>(HttpStatus.NO_CONTENT);
         }

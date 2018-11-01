@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface Mservice {
     Meeting createMeeting(Meeting meeting);
-    List<Meeting> getAllMeeting();
+    List<Meeting> getAllMeetings();
     List<Meeting> getUserMeetings(String id);
     Meeting getMettById(String uid,int id);
     void addUser(int id, String umail);

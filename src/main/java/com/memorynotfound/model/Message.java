@@ -27,8 +27,17 @@ public class Message implements Serializable {
         private String f;
         private String event;
         private User user;
-        private Meeting meeting;
         private String info;
+        private int mid;
+
+
+        public int getMid() {
+            return mid;
+        }
+
+        public void setMid(int mid) {
+            this.mid = mid;
+        }
 
         public void setId(int id) {
             this.id = id;
@@ -62,13 +71,6 @@ public class Message implements Serializable {
             this.user = user;
         }
 
-        public Meeting getMeeting() {
-            return meeting;
-        }
-
-        public void setMeeting(Meeting meeting) {
-            this.meeting = meeting;
-        }
 
         public String getMessage() {
             return message;

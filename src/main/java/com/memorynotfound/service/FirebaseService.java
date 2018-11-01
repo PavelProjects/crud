@@ -2,7 +2,10 @@ package com.memorynotfound.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.memorynotfound.config.DtSource;
+import com.memorynotfound.controller.UserController;
 import com.memorynotfound.model.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
@@ -18,13 +21,16 @@ public class FirebaseService implements FbService {
     private static String url= "https://gcm-http.googleapis.com/gcm/send";
     private static String serverKey="AAAA_nYrORc:APA91bHh1UqedOuiEzIFUfG6yAdLUNBEKQOUuTdmTxXDHgseZ6yEnGPq5UQibQza9bPZKqRyRVfYvQFTX7EbS7kXGbCUjGEZy1dWek7Y31_3OaKHIUncz5wosMvFHaXNMVZCjllbGW9Y3Vm-mTnlxtcavz7rnaY55Q";
     private DataSource dataSource = DtSource.getDts();
+    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+
 
 
     @Override
     public String sendMessage(Message value) throws Exception{
+        LOG.info("send message to: "+value.getTo());
         ObjectMapper objectMapper = new ObjectMapper();
         String message = objectMapper.writeValueAsString(value);
-
+        LOG.info("MESSAGE: "+message);
         HttpURLConnection conn = null;
         try{
             URL obj =new URL(url);
@@ -50,6 +56,7 @@ public class FirebaseService implements FbService {
                 response.append('\r');
             }
             br.close();
+            LOG.info(response.toString());
             return response.toString();
 
         } catch (Exception e) {
@@ -67,13 +74,14 @@ public class FirebaseService implements FbService {
 
     @Override
     public void TokenChanged(String token,String mail) {
+        LOG.info("new token: "+token+", for user: "+mail);
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr= c.prepareStatement("update users id = ? where mail = ?;");
+            PreparedStatement pr= c.prepareStatement("update users set id = ? where mail = ?;");
             pr.setString(1,token);
             pr.setString(2,mail);
             pr.execute();
-            pr.cancel();
+            pr.close();
             c.close();
         }catch (Exception e){
             System.err.println(e.getClass().getName() + ": " + e.getMessage());

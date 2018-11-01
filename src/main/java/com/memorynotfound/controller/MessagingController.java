@@ -27,7 +27,7 @@ public class MessagingController {
     public ResponseEntity<Void> sendMessage(@RequestBody Message message) throws Exception {
         LOG.info("send message to "+message.getTo());
         if (message.getTo().equals("meeting")) {
-            Meeting meeting = mservice.getMettById(ProfileCotroller.uid, message.getData().getMeeting().getId());
+            Meeting meeting = mservice.getMettById(ProfileCotroller.uid, message.getData().getMid());
             if (meeting != null) {
                 mesService.sendToMeeting(message, meeting);
             }
@@ -38,10 +38,10 @@ public class MessagingController {
     public ResponseEntity<List<Message>> getMessage (@PathVariable("mid") int mid){
         List<Message> messages = mesService.getMessages(ProfileCotroller.uid,mid);
         if (messages == null || messages.isEmpty()){
-            LOG.info("no messages");
+            LOG.info("no messages for " + ProfileCotroller.uid);
             return new ResponseEntity<List<Message>>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<Message>>(messages, HttpStatus.FOUND);
+        return new ResponseEntity<List<Message>>(messages, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/token",method = RequestMethod.POST)

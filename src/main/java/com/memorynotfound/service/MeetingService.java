@@ -53,7 +53,7 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public List<Meeting> getAllMeeting() {
+    public List<Meeting> getAllMeetings() {
         List<Meeting> meet = new ArrayList<>();
         Connection c = null;
         Statement stmt = null;
