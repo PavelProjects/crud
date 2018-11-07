@@ -3,9 +3,13 @@ package com.memorynotfound.service;
 
 import com.memorynotfound.config.DtSource;
 import com.memorynotfound.controller.ProfileCotroller;
+import com.memorynotfound.controller.UserController;
 import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.Message;
+import com.memorynotfound.model.MessagingData;
 import com.memorynotfound.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -17,6 +21,9 @@ public class MeetingService implements Mservice {
     Uservice uservice = new UserService();
     DataSource dataSource = DtSource.getDts();
     FirebaseService fb=new FirebaseService();
+    private boolean flag;
+    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+
 
     @Override
     public Meeting createMeeting(Meeting meeting) {
@@ -209,20 +216,30 @@ public class MeetingService implements Mservice {
     }
 
     @Override
-    public void deleteUser(int id, String uid) {
+    public boolean deleteUser(int id, String uid) {
         if (uid.length()>0 && id > 0){
             try{
                 Connection c = dataSource.getConnection();
-                PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and umail = ?;");
+                PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and umail = ? returning *;");
                 pr.setInt(1, id);
                 pr.setString(2,uid);
-                pr.execute();
+                ResultSet rs = pr.executeQuery();
+                while (rs.next()){
+                    if (rs.getInt("mid")==id && rs.getString("umail").equals(uid)){
+                        flag=true;
+                        LOG.info("TRUE");
+                    }else{
+                        flag =false;
+                        LOG.info("FALSE");
+                    }
+                }
                 pr.close();
                 c.close();
             }catch (Exception e){
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
+        return flag;
     }
 
     @Override
@@ -242,7 +259,7 @@ public class MeetingService implements Mservice {
             }
         }
         meeting1 = getMettById(ProfileCotroller.uid,meeting.getId());
-        Message.Data data = new Message.Data();
+        MessagingData data = new MessagingData();
         data.setF("server");
         data.setEvent("update_meeting");
         Message message = new Message();

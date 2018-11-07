@@ -1,6 +1,7 @@
 package com.memorynotfound.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.memorynotfound.model.MessagingData;
 import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.Message;
 import com.memorynotfound.service.*;
@@ -35,13 +36,13 @@ public class MessagingController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
     @RequestMapping(value = "/{mid}", method = RequestMethod.GET)
-    public ResponseEntity<List<Message>> getMessage (@PathVariable("mid") int mid){
-        List<Message> messages = mesService.getMessages(ProfileCotroller.uid,mid);
+    public ResponseEntity<List<MessagingData>> getMessage (@PathVariable("mid") int mid){
+        List<MessagingData> messages = mesService.getMessages(ProfileCotroller.uid,mid);
         if (messages == null || messages.isEmpty()){
             LOG.info("no messages for " + ProfileCotroller.uid);
-            return new ResponseEntity<List<Message>>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<List<MessagingData>>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<Message>>(messages, HttpStatus.OK);
+        return new ResponseEntity<List<MessagingData>>(messages, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/token",method = RequestMethod.POST)

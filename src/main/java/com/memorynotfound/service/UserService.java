@@ -2,6 +2,7 @@ package com.memorynotfound.service;
 
 import com.memorynotfound.config.DtSource;
 import com.memorynotfound.model.Message;
+import com.memorynotfound.model.MessagingData;
 import com.memorynotfound.model.User;
 import com.memorynotfound.model.UserEvent;
 
@@ -117,7 +118,7 @@ public class UserService implements Uservice{
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
         Message message = new Message();
-        Message.Data data = new Message.Data();
+        MessagingData data = new MessagingData();
         data.setF("server");
         data.setEvent("add_friend");
         User user = findByMail(id);

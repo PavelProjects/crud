@@ -5,6 +5,7 @@ import com.memorynotfound.controller.ProfileCotroller;
 import com.memorynotfound.controller.UserController;
 import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.Message;
+import com.memorynotfound.model.MessagingData;
 import com.memorynotfound.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,8 @@ public class MessageService implements MesService {
     }
 
     @Override
-    public List<Message> getMessages(String uid,int mid) {
-        List<Message> messages = new ArrayList<>();
+    public List<MessagingData> getMessages(String uid,int mid) {
+        List<MessagingData> messageData= new ArrayList<>();
         if (mservice.getMettById(uid,mid)!=null) {
             try {
                 Connection c = dataSource.getConnection();
@@ -82,14 +83,11 @@ public class MessageService implements MesService {
                 prmes.setInt(1, mid);
                 ResultSet rs = prmes.executeQuery();
                 while (rs.next()) {
-                    Message message = new Message();
-                    Message.Data data = new Message.Data();
+                    MessagingData data = new MessagingData();
                     data.setF(rs.getString("f"));
                     data.setMessage(rs.getString("message"));
                     data.setId(rs.getInt("id"));
-                    message.setTo(rs.getString("send_to"));
-                    message.setData(data);
-                    messages.add(message);
+                    messageData.add(data);
                 }
                 rs.close();
                 prmes.close();
@@ -100,6 +98,6 @@ public class MessageService implements MesService {
         }else{
             LOG.info("Haven't got "+ uid +" on "+mid);
         }
-        return messages;
+        return messageData;
     }
 }

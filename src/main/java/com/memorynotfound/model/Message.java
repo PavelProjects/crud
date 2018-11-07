@@ -3,7 +3,7 @@ package com.memorynotfound.model;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    private Data data;
+    private MessagingData data;
     private String to;
 
     public String getTo() {
@@ -13,79 +13,12 @@ public class Message implements Serializable {
     public void setTo(String to) {
         this.to = to;
     }
-    public Data getData(){
+    public MessagingData getData(){
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(MessagingData data) {
         this.data = data;
     }
 
-    public static class Data{
-        private int id;
-        private String message;
-        private String f;
-        private String event;
-        private User user;
-        private String info;
-        private int mid;
-
-
-        public int getMid() {
-            return mid;
-        }
-
-        public void setMid(int mid) {
-            this.mid = mid;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getInfo() {
-            return info;
-        }
-
-        public void setInfo(String inf) {
-            this.info = inf;
-        }
-
-        public String getEvent() {
-            return event;
-        }
-
-        public User getUser() {
-            return user;
-        }
-
-        public void setEvent(String event) {
-            this.event = event;
-        }
-
-        public void setUser(User user) {
-            this.user = user;
-        }
-
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public String getF() {
-            return f;
-        }
-
-        public void setF(String f) {
-            this.f = f;
-        }
-    }
 }

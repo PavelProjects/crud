@@ -4,6 +4,8 @@ import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.User;
 import com.memorynotfound.service.MeetingService;
 import com.memorynotfound.service.Mservice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ import java.util.List;
 public class MeetingController {
 
     private Mservice mservice =  new MeetingService();
+    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Meeting> createMeeting(@RequestBody Meeting meeting1){
@@ -59,16 +63,19 @@ public class MeetingController {
             return new ResponseEntity<Void>(HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "{id}/{uid}",method = RequestMethod.DELETE)
-    public ResponseEntity<Void>deleteUser(@PathVariable("id") int id,@PathVariable("uid") String uid){
-        mservice.deleteUser(id,uid);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public ResponseEntity<Void>deleteUser(@PathVariable("id") int id,@RequestBody User user){
+        LOG.info("meeting id:"+String.valueOf(id)+" user mail:"+user.getMail());
+        if (mservice.deleteUser(id,user.getMail())){
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        return new ResponseEntity<Void>(HttpStatus.CONFLICT);
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
     public ResponseEntity<Meeting>update(@RequestBody Meeting meeting,@PathVariable("id") int id){
         meeting.setId(id);
         mservice.update(meeting);
-        return new ResponseEntity<Meeting>(meeting,HttpStatus.OK    );
+        return new ResponseEntity<Meeting>(meeting,HttpStatus.OK);
     }
 }
