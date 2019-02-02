@@ -21,14 +21,14 @@ public class MessagingController {
     private Mservice mservice = new MeetingService();
     private FbService fb= new FirebaseService();
     private ObjectMapper objectMapper = new ObjectMapper();
-    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private final Logger LOG = LoggerFactory.getLogger(MessagingController.class);
 
 
     @RequestMapping(value = "/send",method = RequestMethod.POST)
     public ResponseEntity<Void> sendMessage(@RequestBody Message message) throws Exception {
         LOG.info("send message to "+message.getTo());
         if (message.getTo().equals("meeting")) {
-            Meeting meeting = mservice.getMettById(ProfileCotroller.uid, message.getData().getMid());
+            Meeting meeting = mservice.getMettById(ProfileController.uid, message.getData().getMid());
             if (meeting != null) {
                 mesService.sendToMeeting(message, meeting);
             }
@@ -37,9 +37,9 @@ public class MessagingController {
     }
     @RequestMapping(value = "/{mid}", method = RequestMethod.GET)
     public ResponseEntity<List<MessagingData>> getMessage (@PathVariable("mid") int mid){
-        List<MessagingData> messages = mesService.getMessages(ProfileCotroller.uid,mid);
+        List<MessagingData> messages = mesService.getMessages(ProfileController.uid,mid);
         if (messages == null || messages.isEmpty()){
-            LOG.info("no messages for " + ProfileCotroller.uid);
+            LOG.info("no messages for " + ProfileController.uid);
             return new ResponseEntity<List<MessagingData>>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<List<MessagingData>>(messages, HttpStatus.OK);
@@ -47,7 +47,7 @@ public class MessagingController {
 
     @RequestMapping(value = "/token",method = RequestMethod.POST)
     public ResponseEntity<Void> updateToken(@RequestBody String token){
-        fb.TokenChanged(token,ProfileCotroller.uid);
+        fb.TokenChanged(token, ProfileController.uid);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

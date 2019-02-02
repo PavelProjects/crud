@@ -2,8 +2,7 @@ package com.memorynotfound.service;
 
 
 import com.memorynotfound.config.DtSource;
-import com.memorynotfound.controller.ProfileCotroller;
-import com.memorynotfound.controller.UserController;
+import com.memorynotfound.controller.ProfileController;
 import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.Message;
 import com.memorynotfound.model.MessagingData;
@@ -21,20 +20,24 @@ public class MeetingService implements Mservice {
     Uservice uservice = new UserService();
     DataSource dataSource = DtSource.getDts();
     FirebaseService fb=new FirebaseService();
+    MessageService messervice=new MessageService();
     private boolean flag;
-    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private final Logger LOG = LoggerFactory.getLogger(MeetingService.class);
 
 
     @Override
     public Meeting createMeeting(Meeting meeting) {
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail, date, time, adress) values (?,?,?,?,?) returning *;");
+            c.setAutoCommit(false);
+            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail, date, time, adress) values (?,?,?,?,?,?,?) returning *;");
             pr.setString(1,meeting.getName());
             pr.setString(2,meeting.getAdmin());
             pr.setDate(3, Date.valueOf(java.time.LocalDate.now()));
             pr.setString(4,String.valueOf(java.time.LocalTime.now()));
             pr.setString(5,meeting.getAdress());
+            pr.setDouble(6,meeting.getLatitude());
+            pr.setDouble(7,meeting.getLongitude());
             ResultSet rs = pr.executeQuery();
             while (rs.next()){
                 meeting =new Meeting();
@@ -44,6 +47,8 @@ public class MeetingService implements Mservice {
                 meeting.setAdress(rs.getString("adress"));
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
+                meeting.setLatitude(rs.getInt("latitude"));
+                meeting.setLongitude(rs.getInt("longitude"));
             }
             if (meeting.getId()!=0) {
                 pr = c.prepareStatement("insert into meetings values (?,?);");
@@ -79,11 +84,13 @@ public class MeetingService implements Mservice {
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setAdress(rs.getString("adress"));
+                meeting.setLatitude(rs.getDouble("latitude"));
+                meeting.setLongitude(rs.getDouble("longitude"));
                 pr.setInt(1, id);
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
-                    user.setId(users.getString("id"));
+                    user.setId(users.getString("id").replaceAll("([\"])", ""));
                     user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
                     user.setMail(users.getString("mail"));
@@ -121,11 +128,13 @@ public class MeetingService implements Mservice {
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setAdress(rs.getString("adress"));
+                meeting.setLatitude(rs.getDouble("latitude"));
+                meeting.setLongitude(rs.getDouble("longitude"));
                 pr.setInt(1, id);
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
-                    user.setId(users.getString("id"));
+                    user.setId(users.getString("id").replaceAll("([\"])", ""));
                     user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
                     user.setMail(users.getString("mail"));
@@ -160,10 +169,12 @@ public class MeetingService implements Mservice {
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setAdress(rs.getString("adress"));
+                meeting.setLatitude(rs.getDouble("latitude"));
+                meeting.setLongitude(rs.getDouble("longitude"));
                 ResultSet users = pr.executeQuery();
                 while (users.next()) {
                     User user = new User();
-                    user.setId(users.getString("id"));
+                    user.setId(users.getString("id").replaceAll("([\"])", ""));
                     user.setName(users.getString("name"));
                     user.setRole(users.getString("userrole"));
                     user.setMail(users.getString("mail"));
@@ -187,6 +198,10 @@ public class MeetingService implements Mservice {
 
     @Override
     public void addUser(int id, String umail) {
+        LOG.info("add "+umail+" to "+String.valueOf(id));
+        User user =uservice.findByMail(umail);
+        Meeting meeting = getMettById(ProfileController.uid, id);
+        if (!meeting.getUsers().contains(user)) {
             try {
                 Connection c = dataSource.getConnection();
                 PreparedStatement pr = c.prepareStatement("insert into meetings (mid,umail) values (?,?);");
@@ -198,34 +213,47 @@ public class MeetingService implements Mservice {
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
-//        Message message = new Message();
-//        Message.Data data = new Message.Data();
-//        data.setEvent("add_to_meeting");
-//        data.setF("server");
-//        data.setInfo(String.valueOf(id));
-//        data.setMessage("You have been added to meeting! Tap to open.");
-//        message.setData(data);
-//        UserService userService = new UserService();
-//        message.setTo(userService.findByMail(umail).getId());
-//        try {
-//            fb.sendMessage(message);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        //return flag;
+            Message message = new Message();
+            MessagingData data = new MessagingData();
+            data.setEvent("add_to_meeting");
+            data.setF("server");
+            data.setInfo(String.valueOf(id));
+            data.setMessage("You have been added to meeting! Tap to open.");
+            message.setData(data);
+            message.setTo(user.getId().replaceAll("([\"])", ""));
+            try {
+                fb.sendMessage(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage());
+            }
+            data.setEvent("message");
+            data.setF("server");
+            data.setInfo(String.valueOf(id));
+            data.setMessage(user.getName() + " was added to the meeting;");
+            message.setData(data);
+            message.setTo("meeting");
+            try {
+                messervice.sendToMeeting(message, meeting);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
     }
 
     @Override
-    public boolean deleteUser(int id, String uid) {
-        if (uid.length()>0 && id > 0){
+    public boolean deleteUser(int id, String umail) {
+        User user =uservice.findByMail(umail);
+        if (umail.length()>0 && id > 0){
             try{
                 Connection c = dataSource.getConnection();
                 PreparedStatement pr = c.prepareStatement("delete from meetings where mid = ? and umail = ? returning *;");
                 pr.setInt(1, id);
-                pr.setString(2,uid);
+                pr.setString(2,umail);
                 ResultSet rs = pr.executeQuery();
                 while (rs.next()){
-                    if (rs.getInt("mid")==id && rs.getString("umail").equals(uid)){
+                    if (rs.getInt("mid")==id && rs.getString("umail").equals(umail)){
                         flag=true;
                         LOG.info("TRUE");
                     }else{
@@ -239,11 +267,41 @@ public class MeetingService implements Mservice {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
+        if (flag) {
+            Message message = new Message();
+            MessagingData data = new MessagingData();
+            data.setEvent("delete_from_meeting");
+            data.setF("server");
+            data.setInfo(String.valueOf(id));
+            data.setMessage("You have been deleted from meeting.");
+            message.setData(data);
+            UserService userService = new UserService();
+            message.setTo(userService.findByMail(umail).getId().replaceAll("([\"])", ""));
+            try {
+                fb.sendMessage(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            data.setEvent("message");
+            data.setF("server");
+            data.setInfo(String.valueOf(id));
+            data.setMessage(user.getName()+" was deleted from the meeting;");
+            message.setData(data);
+            message.setTo("meeting");
+            Meeting meeting = getMettById(ProfileController.uid, id);
+            try {
+                messervice.sendToMeeting(message,meeting);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage());
+            }
+        }
         return flag;
     }
 
     @Override
-    public void update(Meeting meeting) {
+    public void updateName(Meeting meeting) {
+        LOG.info("change name for meeting "+meeting.getName());
         Meeting meeting1;
         if (meeting.getId()>0){
             try{
@@ -258,7 +316,7 @@ public class MeetingService implements Mservice {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
             }
         }
-        meeting1 = getMettById(ProfileCotroller.uid,meeting.getId());
+        meeting1 = getMettById(ProfileController.uid,meeting.getId());
         MessagingData data = new MessagingData();
         data.setF("server");
         data.setEvent("update_meeting");
@@ -267,6 +325,32 @@ public class MeetingService implements Mservice {
         sendTooAll(meeting1,message);
     }
 
+    @Override
+    public void updatePlace(Meeting meeting) {
+        LOG.info("change place for meeting "+meeting.getName());
+        Meeting meeting1;
+        if (meeting.getId()>0){
+            try{
+                Connection c=dataSource.getConnection();
+                PreparedStatement pr = c.prepareStatement("update meeting set latitude = ?, longitude = ? where id = ?;");
+                pr.setDouble(1,meeting.getLatitude());
+                pr.setDouble(2,meeting.getLongitude());
+                pr.setInt(3,meeting.getId());
+                pr.executeQuery();
+                pr.close();
+                c.close();
+            }catch (Exception e){
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            }
+        }
+        meeting1 = getMettById(ProfileController.uid,meeting.getId());
+        MessagingData data = new MessagingData();
+        data.setF("server");
+        data.setEvent("update_meeting");
+        Message message = new Message();
+        message.setData(data);
+        sendTooAll(meeting1,message);
+    }
 
     private void sendTooAll(Meeting meeting, Message message){
         if (meeting!=null) {

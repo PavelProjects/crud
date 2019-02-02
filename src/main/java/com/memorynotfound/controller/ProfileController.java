@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/profile")
-public class ProfileCotroller {
+public class ProfileController {
     public static String uid;
 
     private Uservice uservice = new UserService();

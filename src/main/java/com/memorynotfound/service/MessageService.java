@@ -1,8 +1,6 @@
 package com.memorynotfound.service;
 
 import com.memorynotfound.config.DtSource;
-import com.memorynotfound.controller.ProfileCotroller;
-import com.memorynotfound.controller.UserController;
 import com.memorynotfound.model.Meeting;
 import com.memorynotfound.model.Message;
 import com.memorynotfound.model.MessagingData;
@@ -19,15 +17,14 @@ import java.util.List;
 
 public class MessageService implements MesService {
     private FirebaseService fb = new FirebaseService();
-    private MeetingService mservice = new MeetingService();
     private DataSource dataSource = DtSource.getDts();
-    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 
 
     @Override
     public void sendToMeeting(Message message, Meeting meeting) throws Exception {
         LOG.info("start sending....");
-        if (mservice.getMettById(meeting.getAdmin(), meeting.getId()) != null) {
+        if (meeting != null) {
             List<User> users = meeting.getUsers();
             addToBase(message);
             if (!users.isEmpty()) {
@@ -48,7 +45,7 @@ public class MessageService implements MesService {
     private void addToBase(Message message) {
         int id = 0;
         try {
-            LOG.info("add message");
+            LOG.info("add message to base");
             Connection c = dataSource.getConnection();
             PreparedStatement preparedStatement = c.prepareStatement("insert into message (message,f,send_to) values (?,?,?) returning id;");
             preparedStatement.setString(1, message.getData().getMessage());
@@ -58,7 +55,6 @@ public class MessageService implements MesService {
             while (rs.next()) {
                 id = rs.getInt("id");
             }
-            LOG.info("Message id:" + String.valueOf(id));
             if (id != 0) {
                 preparedStatement = c.prepareStatement("insert into messages values (?,?);");
                 preparedStatement.setInt(1, id);
@@ -76,6 +72,7 @@ public class MessageService implements MesService {
     @Override
     public List<MessagingData> getMessages(String uid,int mid) {
         List<MessagingData> messageData= new ArrayList<>();
+        MeetingService mservice = new MeetingService();
         if (mservice.getMettById(uid,mid)!=null) {
             try {
                 Connection c = dataSource.getConnection();

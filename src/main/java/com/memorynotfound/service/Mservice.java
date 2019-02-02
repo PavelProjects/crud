@@ -13,5 +13,6 @@ public interface Mservice {
     Meeting getMettById(String uid,int id);
     void addUser(int id, String umail);
     boolean deleteUser(int id, String uid);
-    void update(Meeting meeting);
+    void updateName(Meeting meeting);
+    void updatePlace(Meeting meeting);
 }

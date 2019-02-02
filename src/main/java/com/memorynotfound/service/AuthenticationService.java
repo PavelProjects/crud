@@ -1,7 +1,7 @@
 package com.memorynotfound.service;
 
 
-import com.memorynotfound.controller.ProfileCotroller;
+import com.memorynotfound.controller.ProfileController;
 
 import java.io.IOException;
 import java.util.*;
@@ -29,7 +29,7 @@ public class AuthenticationService {
         String id = us.auth(username,password);
         if (id.length()>0){
             flag=true;
-            ProfileCotroller.uid=id;
+            ProfileController.uid=id;
         }
         return flag;
     }

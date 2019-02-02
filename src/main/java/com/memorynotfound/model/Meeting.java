@@ -14,10 +14,13 @@ public class Meeting implements Serializable{
     private String date;
     private String time;
     private String adress;
+    private double latitude;
+    private double longitude;
+
 
     public Meeting(){}
 
-    public Meeting(int id, String name, String admin,List<User> users, String date, String time, String adress){
+    public Meeting(int id, String name, String admin,List<User> users, String date, String time, String adress, double latitude, double longitude){
         this.id=id;
         this.meetname=name;
         this.admin=admin;
@@ -25,6 +28,22 @@ public class Meeting implements Serializable{
         this.date = date;
         this.time = time;
         this.adress = adress;
+        this.latitude=latitude;
+        this.longitude=longitude;
+    }
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
     public int getId(){
         return id;

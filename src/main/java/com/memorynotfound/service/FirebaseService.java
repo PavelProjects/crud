@@ -21,7 +21,7 @@ public class FirebaseService implements FbService {
     private static String url= "https://gcm-http.googleapis.com/gcm/send";
     private static String serverKey="AAAA_nYrORc:APA91bHh1UqedOuiEzIFUfG6yAdLUNBEKQOUuTdmTxXDHgseZ6yEnGPq5UQibQza9bPZKqRyRVfYvQFTX7EbS7kXGbCUjGEZy1dWek7Y31_3OaKHIUncz5wosMvFHaXNMVZCjllbGW9Y3Vm-mTnlxtcavz7rnaY55Q";
     private DataSource dataSource = DtSource.getDts();
-    private final Logger LOG = LoggerFactory.getLogger(UserController.class);
+    private final Logger LOG = LoggerFactory.getLogger(FirebaseService.class);
 
 
 
@@ -77,7 +77,7 @@ public class FirebaseService implements FbService {
         LOG.info("new token: "+token+", for user: "+mail);
         try{
             Connection c = dataSource.getConnection();
-            PreparedStatement pr= c.prepareStatement("update users set id = ? where mail = ?;");
+            PreparedStatement pr= c.prepareStatement("updateName users set id = ? where mail = ?;");
             pr.setString(1,token);
             pr.setString(2,mail);
             pr.execute();

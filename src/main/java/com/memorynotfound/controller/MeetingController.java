@@ -22,7 +22,7 @@ public class MeetingController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Meeting> createMeeting(@RequestBody Meeting meeting1){
-        meeting1.setAdmin(ProfileCotroller.uid);
+        meeting1.setAdmin(ProfileController.uid);
         Meeting meeting = mservice.createMeeting(meeting1);
         if (meeting.getId() == 0){
             return new ResponseEntity<Meeting>(HttpStatus.CONFLICT);
@@ -41,7 +41,7 @@ public class MeetingController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Meeting>> getUsersMeetings(){
-        List<Meeting> meeting= mservice.getUserMeetings(ProfileCotroller.uid);
+        List<Meeting> meeting= mservice.getUserMeetings(ProfileController.uid);
         if (meeting == null || meeting.isEmpty()){
             return new ResponseEntity<List<Meeting>>(HttpStatus.NO_CONTENT);
         }
@@ -50,7 +50,7 @@ public class MeetingController {
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public ResponseEntity<Meeting> getMeetById(@PathVariable("id") int id){
-        Meeting meeting = mservice.getMettById(ProfileCotroller.uid,id);
+        Meeting meeting = mservice.getMettById(ProfileController.uid,id);
         if (meeting==null){
             return new ResponseEntity<Meeting>(HttpStatus.NO_CONTENT);
         }
@@ -72,10 +72,23 @@ public class MeetingController {
         return new ResponseEntity<Void>(HttpStatus.CONFLICT);
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.PUT)
-    public ResponseEntity<Meeting>update(@RequestBody Meeting meeting,@PathVariable("id") int id){
-        meeting.setId(id);
-        mservice.update(meeting);
+    @RequestMapping(value = "/updateName",method = RequestMethod.PUT)
+    public ResponseEntity<Meeting>updateName(@RequestBody Meeting meeting){
+        if (meeting!=null) {
+            mservice.updateName(meeting);
+        }else{
+            return new ResponseEntity<Meeting>(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<Meeting>(meeting,HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/updatePlace",method = RequestMethod.PUT)
+    public ResponseEntity<Void>updatePoint(@RequestBody Meeting meeting){
+        if (meeting!=null){
+            mservice.updatePlace(meeting);
+        }else{
+            return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

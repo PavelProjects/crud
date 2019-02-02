@@ -126,7 +126,7 @@ public class UserService implements Uservice{
         data.setUser(user);
         data.setMessage(user.getName()+" added you as a friend! Tap for more info.");
         message.setData(data);
-        message.setTo(user1.getId());
+        message.setTo(user1.getId().replaceAll("([\"])", ""));
         FirebaseService fb = new FirebaseService();
         try {
             fb.sendMessage(message);

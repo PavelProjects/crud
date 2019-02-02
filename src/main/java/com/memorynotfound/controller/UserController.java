@@ -84,7 +84,7 @@ public class UserController {
         currentUser.setName(user.getName());
         currentUser.setRole(user.getRole());
 
-        //userService.update(user);
+        //userService.updateName(user);
         return new ResponseEntity<User>(currentUser, HttpStatus.OK);
     }
 
@@ -92,7 +92,7 @@ public class UserController {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable("id") String id){
         LOG.info("deleting user with id: {}", id);
-        User user = uservice.findById(ProfileCotroller.uid);
+        User user = uservice.findById(ProfileController.uid);
         if (user.getRole().contains("admin")) {
             uservice.delete(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
