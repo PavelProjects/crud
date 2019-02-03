@@ -30,21 +30,19 @@ public class MeetingService implements Mservice {
         try{
             Connection c = dataSource.getConnection();
             c.setAutoCommit(false);
-            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail, date, time, adress) values (?,?,?,?,?,?,?) returning *;");
+            PreparedStatement pr = c.prepareStatement("insert into meeting (name, admin_mail, date, time, latitude, longitude) values (?,?,?,?,?,?) returning *;");
             pr.setString(1,meeting.getName());
             pr.setString(2,meeting.getAdmin());
             pr.setDate(3, Date.valueOf(java.time.LocalDate.now()));
             pr.setString(4,String.valueOf(java.time.LocalTime.now()));
-            pr.setString(5,meeting.getAdress());
-            pr.setDouble(6,meeting.getLatitude());
-            pr.setDouble(7,meeting.getLongitude());
+            pr.setDouble(5,meeting.getLatitude());
+            pr.setDouble(6,meeting.getLongitude());
             ResultSet rs = pr.executeQuery();
             while (rs.next()){
                 meeting =new Meeting();
                 meeting.setId(rs.getInt("id"));
                 meeting.setName(rs.getString("name"));
                 meeting.setAdmin(rs.getString("admin_mail"));
-                meeting.setAdress(rs.getString("adress"));
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
                 meeting.setLatitude(rs.getInt("latitude"));
@@ -83,7 +81,6 @@ public class MeetingService implements Mservice {
                 meeting.setAdmin(rs.getString("admin_mail"));
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
-                meeting.setAdress(rs.getString("adress"));
                 meeting.setLatitude(rs.getDouble("latitude"));
                 meeting.setLongitude(rs.getDouble("longitude"));
                 pr.setInt(1, id);
@@ -127,7 +124,6 @@ public class MeetingService implements Mservice {
                 meeting.setAdmin(rs.getString("admin_mail"));
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
-                meeting.setAdress(rs.getString("adress"));
                 meeting.setLatitude(rs.getDouble("latitude"));
                 meeting.setLongitude(rs.getDouble("longitude"));
                 pr.setInt(1, id);
@@ -168,7 +164,6 @@ public class MeetingService implements Mservice {
                 meeting.setAdmin(rs.getString("admin_mail"));
                 meeting.setDate(rs.getString("date"));
                 meeting.setTime(rs.getString("time"));
-                meeting.setAdress(rs.getString("adress"));
                 meeting.setLatitude(rs.getDouble("latitude"));
                 meeting.setLongitude(rs.getDouble("longitude"));
                 ResultSet users = pr.executeQuery();

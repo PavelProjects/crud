@@ -13,21 +13,19 @@ public class Meeting implements Serializable{
     private List<User> users = new ArrayList();
     private String date;
     private String time;
-    private String adress;
     private double latitude;
     private double longitude;
 
 
     public Meeting(){}
 
-    public Meeting(int id, String name, String admin,List<User> users, String date, String time, String adress, double latitude, double longitude){
+    public Meeting(int id, String name, String admin,List<User> users, String date, String time, double latitude, double longitude){
         this.id=id;
         this.meetname=name;
         this.admin=admin;
         this.users=users;
         this.date = date;
         this.time = time;
-        this.adress = adress;
         this.latitude=latitude;
         this.longitude=longitude;
     }
@@ -72,20 +70,12 @@ public class Meeting implements Serializable{
         this.users.add(user);
     }
 
-    public String getAdress() {
-        return adress;
-    }
-
     public String getDate() {
         return date;
     }
 
     public String getTime() {
         return time;
-    }
-
-    public void setAdress(String adress) {
-        this.adress = adress;
     }
 
     public void setDate(String date) {
